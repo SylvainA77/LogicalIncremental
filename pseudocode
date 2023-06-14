@@ -1,0 +1,17 @@
+mariadb- (.sh) --begin-id [BEGINGTID] --begin-file [INFILE] (/path/to/logical/backup/file.sql) --until-gtid [ENDGTID] --output-file [OUTFILE] (/path/to/output/file) --user [USER] --password [PASSWORD] --host [HOST] --port [PORT]
+
+step 0 : if no OUTFILE then stdout
+
+step 1 : 
+find file & position on the host
+if BEGINGTID : loop through -B --raw "SHOW BINARY LOGS;" | cut -f1
+for each $file
+(MASTERLOGFILE, MASTERLOGPOS) -B --raw show binlog events in $file | grep "GTID $GTID" | cut -f1,5
+
+if INFILE : 
+MASTERLOGFILE = grep -i "master_log_file" | cut -d'=' -f2 | cut -d'''' -f2
+MASTERLOGPOS = grep -i "master_log_pos" | cut -d'=' -f2 | cut -d'''' -f2
+
+step 2 : 
+
+ show binary logs | tail -1 | cut-f1
